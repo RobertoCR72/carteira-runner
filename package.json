@@ -1,0 +1,14 @@
+{
+  "name": "carteira-runner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Atualiza a base Airtable de monitoramento de carteira com cotações da brapi.dev (ações) e da PTAX do Banco Central (moedas).",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/atualizar-carteira.mjs",
+    "test": "node --test"
+  }
+}
