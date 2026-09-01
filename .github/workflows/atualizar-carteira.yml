@@ -24,6 +24,27 @@ jobs:
       - name: Testes
         run: npm test
 
+      # Diagnóstico temporário: mede a FORMA dos secrets, nunca o conteúdo.
+      # Um PAT do Airtable tem 17 caracteres de id + 1 ponto + 64 hexadecimais = 82.
+      # Remova este passo depois que a autenticação estiver funcionando.
+      - name: Diagnostico dos secrets
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          BRAPI_TOKEN: ${{ secrets.BRAPI_TOKEN }}
+        run: |
+          echo "AIRTABLE_TOKEN: ${#AIRTABLE_TOKEN} caracteres (esperado 82)"
+          case "$AIRTABLE_TOKEN" in
+            *.*) echo "AIRTABLE_TOKEN: contem ponto separador — SIM" ;;
+            *)   echo "AIRTABLE_TOKEN: contem ponto separador — NAO (provavel Token ID em vez do token)" ;;
+          esac
+          case "$AIRTABLE_TOKEN" in
+            pat*) echo "AIRTABLE_TOKEN: comeca com pat — SIM" ;;
+            *)    echo "AIRTABLE_TOKEN: comeca com pat — NAO" ;;
+          esac
+          LIMPO=$(printf '%s' "$AIRTABLE_TOKEN" | tr -d '[:space:]')
+          echo "AIRTABLE_TOKEN: ${#LIMPO} caracteres apos remover espacos e quebras de linha"
+          echo "BRAPI_TOKEN: ${#BRAPI_TOKEN} caracteres"
+
       - name: Atualizar carteira
         env:
           AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
