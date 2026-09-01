@@ -1,0 +1,31 @@
+name: Atualizar carteira
+
+on:
+  # 22:00 UTC = 19:00 em Brasília (UTC-3, sem horário de verão desde 2019),
+  # depois do fechamento da B3 (18:00) e da publicação da PTAX de fechamento.
+  # Dias úteis apenas. O agendador do GitHub pode atrasar em horários de pico.
+  schedule:
+    - cron: "0 22 * * 1-5"
+  # Permite disparar manualmente pela aba Actions — use isto no primeiro teste.
+  workflow_dispatch:
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Testes
+        run: npm test
+
+      - name: Atualizar carteira
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          BRAPI_TOKEN: ${{ secrets.BRAPI_TOKEN }}
+        run: npm start
